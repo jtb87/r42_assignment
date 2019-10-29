@@ -6,6 +6,7 @@ import time, threading
 from threading import Thread
 import os
 import logging
+import json
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -56,12 +57,14 @@ class MessageHandler(threading.Thread):
         headers = {"Content-Type": "application/json"}
         try:
             r = requests.post(
-                url=api_endpoint, json=message, headers=headers, timeout=10
+                url=api_endpoint, json=message.body, headers=headers, timeout=10
             )
         except requests.exceptions.RequestException as e:
             logging.error(f"Could not complete request {e}")
             return False
+
         if r.status_code == requests.codes.ok:
+            logging.info("API request successful.")
             return True
         else:
             return False
@@ -81,14 +84,11 @@ class QueueConsumer:
 
     def configure(self):
         try:
-            self.api_endpoint = os.environ("API_ENDPOINT")
-            self.queue_name = os.environ("QUEUE_NAME")
-            self.region_name = os.environ("REGION_NAME")
-
+            self.api_endpoint = os.environ.get("API_ENDPOINT", "")
+            self.queue_name = os.environ.get("QUEUE_NAME")
+            self.region_name = os.environ.get("REGION_NAME")
         except Exception:
             logging.error("Environment variables not available")
-        self.sqs = boto3.resource("sqs", region_name="eu-central-1")
-        self.queue = self.sqs.get_queue_by_name(QueueName=self.queue_name)
 
     def start(self):
         self.running = True
@@ -109,6 +109,14 @@ class QueueConsumer:
         return status
 
     def start_listening(self):
+        try:
+            self.sqs = boto3.resource("sqs", region_name=self.region_name)
+            self.queue = self.sqs.get_queue_by_name(QueueName=self.queue_name)
+            logging.info("Consumer started")
+        except Exception as err:
+            self.running = False
+            logging.error(f"Failed to start consumer.")
+            logging.error(f"{err}")
         while self.running:
             messages = self.queue.receive_messages(WaitTimeSeconds=5)
             for message in messages:
@@ -117,25 +125,26 @@ class QueueConsumer:
 
 application = Flask(__name__)
 api = Api(application)
-que_consumer = QueueConsumer()
+queue_consumer = QueueConsumer()
+
 
 """ Api Resources """
 
 
 class StatusQueue(Resource):
     def get(self):
-        return {"status": que_consumer.status()}
+        return {"status": queue_consumer.status()}
 
 
 class StartQueue(Resource):
     def get(self):
-        que_consumer.start()
+        queue_consumer.start()
         return {"status": "queue-consumer started"}
 
 
 class StopQueue(Resource):
     def get(self):
-        que_consumer.stop()
+        queue_consumer.stop()
         return {"status": "queue-consumer stopped"}
 
 

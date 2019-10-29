@@ -5,7 +5,7 @@ from uuid import uuid4
 import hashlib
 import os
 
-queue_name = os.environ("QUEUE_NAME")
+queue_name = os.environ.get("QUEUE_NAME")
 
 s3 = boto3.client("s3")
 sqs = boto3.client("sqs", region_name="eu-central-1")
@@ -41,6 +41,7 @@ def publish_message_to_sqs(message):
         MessageAttributes={},
         MessageBody=json.dumps(message),
         MessageGroupId=str(uuid4()),
+        MessageDeduplicationId=str(uuid4()),
     )
     print(f"published message to sqs-queue: {response['MessageId']}")
 
