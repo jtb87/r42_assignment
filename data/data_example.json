@@ -1,0 +1,28 @@
+{
+    "id": "994a1ba7-e98d-413b-abee-b792c78e677c",
+    "emails": [
+        {
+            "email": "alice@gmail.com",
+            "name": "Alice"
+        },
+        {
+            "email": "bob@gmail.com",
+            "name": "Bob"
+        }
+    ],
+    "order_ids": [
+        {
+            "id": "f5640475-4276-47aa-a647-88fd484659b3",
+            "quantity": 1,
+            "item_id": "45a0afb4-aac4-4edf-8bc8-109fb9dda3a5"
+        },
+        {
+            "id": "d03b9753-264f-4a16-ab39-8ebb0f19a215",
+            "quantity": 3,
+            "item_id": "3e20f2f7-176c-4b64-9878-8f4fd1ea1c31"
+        }
+    ],
+    "account_status": "open",
+    "location": "Amsterdam",
+    "creation_date": "2019-10-25T20:09:09.385302"
+}

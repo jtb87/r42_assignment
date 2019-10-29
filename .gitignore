@@ -1,0 +1,10 @@
+# VSCode files
+.vscode
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+# Python files
+__pycache__*
