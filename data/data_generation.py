@@ -2,7 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 import json
 
-date_format = {
+data_format = {
     "id": str(uuid4()),
     "emails": [
         {"email": "alice@gmail.com", "name": "Alice"},
@@ -20,8 +20,7 @@ date_format = {
 
 def generate_data():
     filename = f'data_{str(datetime.now().time()).split(".")[0].replace(":", "")}.json'
-    data = date_format
-    create_file(filename=filename, data=data)
+    create_file(filename=filename, data=data_format)
 
 
 def create_file(filename: str, data):

@@ -1,9 +1,10 @@
 # description
-see diagram
-Short description of the approach and limitations of the implementation
+See diagram 'relay42_diagram.png' 
+
+Short description of the approach and limitations of the implementation.
 
 
-# source_code deployable to dev/test/prod
+# Source code deployable to dev/test/prod
 The architecture is pretty much the same - it would mean setting different env variables.
 
 ## Deployment steps
