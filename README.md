@@ -1,10 +1,14 @@
-# description
+# R42 assignment
+## Description of solution
 See diagram 'relay42_diagram.png' 
 
 Short description of the approach and limitations of the implementation.
 
 
-# Source code deployable to dev/test/prod
+Diagram:
+![Screenshot](relay42_diagram.png)
+
+## Source code deployable to dev/test/prod
 The architecture is pretty much the same - it would mean setting different env variables.
 
 ## Deployment steps
@@ -13,32 +17,37 @@ The creation of resources and deployment itself is pretty straightforward but ma
 IAM roles are set-up correctly and triggers are done correctly was the issue.
 
 I guess that it would make sense to look at something like cloudformation.
-But here goes: 
-# step 1 - create virtual environment
+But here goes:
+
+### 1 - Install AWS-CLI dependencies
 
 pip install awsebcli
 pip install boto3
 
-(also make sure you have programmatic access to AWS with "AWSElasticBeanstalkFullAccess" and "AmazonSQSFullAccess")
+IAM-role for programmatic access should contain the `AWSElasticBeanstalkFullAccess` and `AmazonSQSFullAccess` policies.
 
-# step 2 & 3 - Create s3/sqs resources 
-pretty much run the deployment scripts: 
-- create_s3_bucket.py && create_sqs_queue.py
+### 2 & 3 - Create s3/sqs resources 
+Run the deployment scripts: 
+- create_s3_bucket.py
+- create_sqs_queue.py
 
-# step 4 - deploy lambda function & set up trigger
-nothing automated here :( 
-deploy code '/lambda-file-handler
+### 4 - Deploy lambda file-handler & set up `s3ObjectCreated` event
 
-make sure the IAM role for this lambda has the policy "AmazonSQSFullAccess" attached
+Deploy code in `./lambda-file-handler` folder to lambda
+Set up S3 event to trigger lambda function whenever file is created.
 
-# setting up sqs-consumer
+IAM-role for lambda function should contain the `AmazonSQSFullAccess` policy.
+
+### 5 - Set up sqs-consumer on elastic-beanstalk
 cd into /eb-sqs-consumer directory
-issue the following commands:
+
+Issue the following commands:
 - eb init consumer-sqs -p python-3.6 -r eu-central-1
 - eb create sqs-consumer-app --single -i t2.nano
 
-make sure the IAM role for this lambda has the policy "AmazonSQSFullAccess" attached
+IAM role for service should contain the `AmazonSQSFullAccess` policy
 
-GET - eb-beanstalk.url.com/status -- will display the status
-GET - eb-beanstalk.url.com/start -- will start the consumer
-GET - eb-beanstalk.url.com/stop -- will stop the consumer
+endpoints for es-service:
+GET - eb-beanstalk.url.com/status   -- displays the status of the sqs-consumer
+GET - eb-beanstalk.url.com/start    -- start the consumer
+GET - eb-beanstalk.url.com/stop     -- stop the consumer
