@@ -1,18 +1,31 @@
 # R42 assignment
 ## Description of solution
-See diagram 'relay42_diagram.png' 
 
-Short description of the approach and limitations of the implementation.
+See the Diagram for a clear image of the approach: 
+Steps:
+- upload *.json file to s3 bucket
+- ObjectCreated event triggers lambda function
+- lambda function validates data & hashes personable identifiable information and sends message to queue 
+- queue-consumer listens to queue -> posts data to endpoint specified in the env variables
 
+Points of improvement:
 
-Diagram:
+1. Deployment scripts automated on Cloudformation - also automated builds for dev/trial/prod
+2. Tests.
+3. Improved logging and statistics
+4. SQS - I'm not 100% convinced on SQS and the consumer -I feel that something like RabbitMQ
+5. Probably i should've looked at something like Celery
+
+*these are all points I considered out of scope, I realized during this project 
+
+Solution diagram:
 ![Screenshot](relay42_diagram.png)
 
 ## Source code deployable to dev/test/prod
 The architecture is pretty much the same - it would mean setting different env variables.
 
 ## Deployment steps
-So in all honesty this is the part where I got stuck a little bit. 
+So in all honesty this is the part where I got stuck a little. 
 The creation of resources and deployment itself is pretty straightforward but making sure all the 
 IAM roles are set-up correctly and triggers are done correctly was the issue.
 
