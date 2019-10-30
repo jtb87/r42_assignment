@@ -14,7 +14,8 @@ Points of improvement:
 2. Tests.
 3. Improved logging and statistics
 4. SQS - I'm not 100% convinced on SQS and the consumer -I feel that something like RabbitMQ
-5. Probably i should've looked at something like Celery
+5. Probably I should've looked at something like Celery
+6. Load testing this approach (I'm curious to see where the limits are) 
 
 *these are all points I considered out of scope, I realized during this project 
 
